@@ -11,6 +11,7 @@ interface Step {
   action: string;
   explanation: string;
   tools: string[];
+  time?: string;
 }
 
 function parseSteps(content: string): Step[] | null {
@@ -226,6 +227,11 @@ function MessageBubble({ msg, isLoading }: { msg: Msg; isLoading: boolean }) {
                 {step.step}
               </span>
               <h3 className="font-semibold text-foreground">{step.action}</h3>
+              {step.time && (
+                <Badge variant="outline" className="ml-auto shrink-0 rounded-md border-accent-gold/30 text-xs text-accent-gold">
+                  ⏱ {step.time}
+                </Badge>
+              )}
             </div>
             <p className="mb-3 text-sm text-muted-foreground">
               {step.explanation}
