@@ -211,6 +211,26 @@ function MessageBubble({ msg, isLoading }: { msg: Msg; isLoading: boolean }) {
 
   const steps = parseSteps(msg.content);
 
+  // While streaming and no valid steps yet, show a thinking indicator
+  if (!steps && isLoading) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="rounded-xl border border-border bg-card p-4"
+      >
+        <div className="flex items-center gap-3">
+          <div className="flex gap-1">
+            <span className="h-2 w-2 rounded-full bg-accent-gold/60 animate-bounce" style={{ animationDelay: "0ms" }} />
+            <span className="h-2 w-2 rounded-full bg-accent-gold/60 animate-bounce" style={{ animationDelay: "150ms" }} />
+            <span className="h-2 w-2 rounded-full bg-accent-gold/60 animate-bounce" style={{ animationDelay: "300ms" }} />
+          </div>
+          <span className="text-sm text-muted-foreground">Building your action plan...</span>
+        </div>
+      </motion.div>
+    );
+  }
+
   if (steps) {
     return (
       <div className="space-y-3">
@@ -253,7 +273,7 @@ function MessageBubble({ msg, isLoading }: { msg: Msg; isLoading: boolean }) {
     );
   }
 
-  // Streaming / raw text fallback
+  // Fallback for non-JSON responses (not streaming)
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -262,7 +282,6 @@ function MessageBubble({ msg, isLoading }: { msg: Msg; isLoading: boolean }) {
     >
       <pre className="whitespace-pre-wrap text-sm text-foreground font-sans">
         {msg.content}
-        {isLoading && <span className="ml-1 inline-block h-3 w-1 animate-pulse bg-accent-gold" />}
       </pre>
     </motion.div>
   );
